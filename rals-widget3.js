@@ -187,14 +187,24 @@
 
   // Main function to fetch and return processed property data
   async function fetchPropertyData(container) {
-    const supplier = container.dataset.supplier || '2000';
-    const prop = container.dataset.prop || '2';
     const apiBase = container.dataset.api || API_BASE_URL;
     const detailBaseUrl = container.dataset.detailUrl || DETAIL_PAGE_BASE_URL;
-    let url = `${apiBase}?sup=${supplier}&prop=${prop}`;
     
-    if (container.dataset.limit) {
-      url += `&limit=${container.dataset.limit}`;
+    let url;
+    
+    // Check if data-query is provided for custom query parameters
+    if (container.dataset.query) {
+      // Use custom query string
+      url = `${apiBase}?${container.dataset.query}`;
+    } else {
+      // Use individual data attributes (backward compatibility)
+      const supplier = container.dataset.supplier || '2000';
+      const prop = container.dataset.prop || '2';
+      url = `${apiBase}?sup=${supplier}&prop=${prop}`;
+      
+      if (container.dataset.limit) {
+        url += `&limit=${container.dataset.limit}`;
+      }
     }
 
     try {

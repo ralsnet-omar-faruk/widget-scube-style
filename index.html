@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RALS Widget 3 - Template Based</title>
+    <link rel="stylesheet" href="rals-widget.css">
+</head>
+<body>
+    <h1>RALS Widget 3 - Template Based</h1>
+    
+    <!-- Widget Container -->
+    <div class="rals-widget" 
+         data-supplier="1370" 
+         data-prop="2" 
+         data-limit="8">
+    </div>
+
+    <script src="rals-widget3.js"></script>
+    <script>
+        // Wait for the widget to load and then render the template
+        document.addEventListener('DOMContentLoaded', async function() {
+            const container = document.querySelector('.rals-widget');
+            
+            try {
+                // Show loading message
+                container.innerHTML = '<p>物件を読み込み中...</p>';
+                
+                // Fetch property data using the widget
+                const properties = await window.RalsWidget3.fetchPropertyData(container);
+                
+                if (!properties || properties.length === 0) {
+                    container.innerHTML = '<p>No properties found.</p>';
+                    return;
+                }
+                
+                // Add container class
+                container.classList.add('rals-widget-container');
+                
+                // Render using template
+                container.innerHTML = `
+                    <div class="properties-grid">
+                        <div class="property-cards">
+                            ${properties.map(p => `
+                                <div class="property-card">
+                                    <div class="property-image">
+                                        <img src="${p.thumbnailUrl}" alt="${p.title}" onerror="this.src='https://ralsnet.example.formatline.com/app/plugins/wp-rengodb/assets/img/noimg.png'">
+                                    </div>
+                                    <div class="property-info">
+                                        <div class="property-rent">${p.price}</div>
+                                        <div class="property-details">
+                                            ${p.traffic ? `${p.traffic}<br>` : ''}
+                                            ${p.address}<br>
+                                            ${p.area}
+                                        </div>
+                                        <a href="${p.detailUrl}" target="_blank" rel="noopener noreferrer" class="property-detail-btn">
+                                            物件詳細を見る
+                                        </a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                container.innerHTML = '<p>物件情報の読み込みに失敗しました。しばらくしてから再度お試しください。</p>';
+            }
+        });
+    </script>
+</body>
+</html>

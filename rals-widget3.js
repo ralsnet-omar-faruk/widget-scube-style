@@ -1,7 +1,5 @@
 (function () {
-  const API_BASE_URL = 'https://ralsnet.example.formatline.com/wp-json/rengodb/v1/search-properties';
-  const DETAIL_PAGE_BASE_URL = 'https://ralsnet.example.formatline.com/property/';
-  const IMAGE_BASE_URL = 'https://pic.cbiz.ne.jp/pic/';
+  // No default URLs - all must be provided via data attributes
 
   function loadCSS() {
     if (document.querySelector('link[data-rals="css"]')) return;
@@ -98,7 +96,24 @@
   }
 
   // Process property data and return structured data object
-  function processPropertyData(item, detailBaseUrl) {
+  function processPropertyData(item, detailBaseUrl, imageBaseUrl) {
+    // Validate required fields
+    if (!item.buildingName) {
+      throw new Error('Building name is required in property data.');
+    }
+    if (!item.buildingMasterId) {
+      throw new Error('Building master ID is required in property data.');
+    }
+    if (!item.supplierId) {
+      throw new Error('Supplier ID is required in property data.');
+    }
+    if (!item.buildingId) {
+      throw new Error('Building ID is required in property data.');
+    }
+    if (!item.propertyId) {
+      throw new Error('Property ID is required in property data.');
+    }
+
     const title = item.buildingName;
     const price = formatPrice(item.propertyPrice);
     const detailUrl = `${detailBaseUrl}${item.buildingMasterId}`;
@@ -106,9 +121,9 @@
     const traffic = getTrafficInfo(item);
     const area = formatArea(item.exclusiveSize);
 
-    // デフォルトの画像として「画像なし」のプレースホルダーを設定
-    let thumbnailUrl = 'https://ralsnet.example.formatline.com/app/plugins/wp-rengodb/assets/img/noimg.png';
-    const supplierId = item.supplierId || 2000;
+    // No default image - let the renderer handle fallback
+    let thumbnailUrl = null;
+    const supplierId = item.supplierId;
     const buildingId = item.buildingId;
     const propertyId = item.propertyId;
 
@@ -116,10 +131,10 @@
     if (item.delegateImgBuilding && item.delegateImgBuilding > 0) {
       const imageNumber = item.delegateImgBuilding;
       if (imageNumber === 1) {
-        thumbnailUrl = `${IMAGE_BASE_URL}${supplierId}/c-${supplierId}-${buildingId}-g.jpg`;
+        thumbnailUrl = `${imageBaseUrl}${supplierId}/c-${supplierId}-${buildingId}-g.jpg`;
       } else {
         const adjustedNumber = imageNumber - 1;
-        thumbnailUrl = `${IMAGE_BASE_URL}${supplierId}/c-${supplierId}-${buildingId}-${adjustedNumber}.jpg`;
+        thumbnailUrl = `${imageBaseUrl}${supplierId}/c-${supplierId}-${buildingId}-${adjustedNumber}.jpg`;
       }
     }
     // 優先度2: 「建物」の代表画像がない場合、「部屋」の代表画像 (`delegateImg`) を使用
@@ -129,42 +144,41 @@
       const propertyImage = item.propertyImages?.find(img => img.number === imageNumber);
       if (propertyImage && propertyImage.category === 'layout') {
         if (imageNumber === 1) {
-          thumbnailUrl = `${IMAGE_BASE_URL}${supplierId}/r-${supplierId}-${propertyId}-m.jpg`;
+          thumbnailUrl = `${imageBaseUrl}${supplierId}/r-${supplierId}-${propertyId}-m.jpg`;
         } else {
-          thumbnailUrl = `${IMAGE_BASE_URL}${supplierId}/r-${supplierId}-${propertyId}-${adjustedNumber}.jpg`;
+          thumbnailUrl = `${imageBaseUrl}${supplierId}/r-${supplierId}-${propertyId}-${adjustedNumber}.jpg`;
         }
       } else {
-        thumbnailUrl = `${IMAGE_BASE_URL}${supplierId}/r-${supplierId}-${propertyId}-${adjustedNumber}.jpg`;
+        thumbnailUrl = `${imageBaseUrl}${supplierId}/r-${supplierId}-${propertyId}-${adjustedNumber}.jpg`;
       }
     }
     // 優先度3: 代表画像が全くない場合、利用可能な全画像 (`images`) のリストから探す
-    else {
-      if (item.images && item.images.length > 0) {
-        const selectedImage = item.images.find(img => img.category === 'exterior') || item.images[0];
-        if (selectedImage) {
-          const imageNumber = selectedImage.number;
-          const category = selectedImage.category;
-          if (category === 'exterior') {
-            if (imageNumber === 1) {
-              thumbnailUrl = `${IMAGE_BASE_URL}${supplierId}/c-${supplierId}-${buildingId}-g.jpg`;
-            } else {
-              const adjustedNumber = imageNumber - 1;
-              thumbnailUrl = `${IMAGE_BASE_URL}${supplierId}/c-${supplierId}-${buildingId}-${adjustedNumber}.jpg`;
-            }
-          } else if (category === 'layout') {
-            if (imageNumber === 1) {
-              thumbnailUrl = `${IMAGE_BASE_URL}${supplierId}/r-${supplierId}-${propertyId}-m.jpg`;
-            } else {
-              const adjustedNumber = imageNumber - 1;
-              thumbnailUrl = `${IMAGE_BASE_URL}${supplierId}/r-${supplierId}-${propertyId}-${adjustedNumber}.jpg`;
-            }
+    else if (item.images && item.images.length > 0) {
+      const selectedImage = item.images.find(img => img.category === 'exterior') || item.images[0];
+      if (selectedImage) {
+        const imageNumber = selectedImage.number;
+        const category = selectedImage.category;
+        if (category === 'exterior') {
+          if (imageNumber === 1) {
+            thumbnailUrl = `${imageBaseUrl}${supplierId}/c-${supplierId}-${buildingId}-g.jpg`;
           } else {
-            const adjustedNumber = Math.max(1, imageNumber - 1);
-            thumbnailUrl = `${IMAGE_BASE_URL}${supplierId}/r-${supplierId}-${propertyId}-${adjustedNumber}.jpg`;
+            const adjustedNumber = imageNumber - 1;
+            thumbnailUrl = `${imageBaseUrl}${supplierId}/c-${supplierId}-${buildingId}-${adjustedNumber}.jpg`;
           }
+        } else if (category === 'layout') {
+          if (imageNumber === 1) {
+            thumbnailUrl = `${imageBaseUrl}${supplierId}/r-${supplierId}-${propertyId}-m.jpg`;
+          } else {
+            const adjustedNumber = imageNumber - 1;
+            thumbnailUrl = `${imageBaseUrl}${supplierId}/r-${supplierId}-${propertyId}-${adjustedNumber}.jpg`;
+          }
+        } else {
+          const adjustedNumber = Math.max(1, imageNumber - 1);
+          thumbnailUrl = `${imageBaseUrl}${supplierId}/r-${supplierId}-${propertyId}-${adjustedNumber}.jpg`;
         }
       }
     }
+    // No image found - thumbnailUrl remains null, let renderer handle fallback
 
     return {
       title,
@@ -178,17 +192,29 @@
   }
 
   // Process all properties and return array of processed data
-  function processProperties(list, detailBaseUrl) {
+  function processProperties(list, detailBaseUrl, imageBaseUrl) {
     if (!list || !list.length) {
       return [];
     }
-    return list.map(item => processPropertyData(item, detailBaseUrl));
+    return list.map(item => processPropertyData(item, detailBaseUrl, imageBaseUrl));
   }
 
   // Main function to fetch and return processed property data
   async function fetchPropertyData(container) {
-    const apiBase = container.dataset.api || API_BASE_URL;
-    const detailBaseUrl = container.dataset.detailUrl || DETAIL_PAGE_BASE_URL;
+    // Validate required data attributes
+    if (!container.dataset.api) {
+      throw new Error('API base URL is required. Set data-api attribute.');
+    }
+    if (!container.dataset.detailUrl) {
+      throw new Error('Detail page base URL is required. Set data-detailUrl attribute.');
+    }
+    if (!container.dataset.imageBaseUrl) {
+      throw new Error('Image base URL is required. Set data-imageBaseUrl attribute.');
+    }
+    
+    const apiBase = container.dataset.api;
+    const detailBaseUrl = container.dataset.detailUrl;
+    const imageBaseUrl = container.dataset.imageBaseUrl;
     
     let url;
     
@@ -198,8 +224,15 @@
       url = `${apiBase}?${container.dataset.query}`;
     } else {
       // Use individual data attributes (backward compatibility)
-      const supplier = container.dataset.supplier || '2000';
-      const prop = container.dataset.prop || '2';
+      if (!container.dataset.supplier) {
+        throw new Error('Supplier ID is required. Set data-supplier attribute.');
+      }
+      if (!container.dataset.prop) {
+        throw new Error('Property type is required. Set data-prop attribute.');
+      }
+      
+      const supplier = container.dataset.supplier;
+      const prop = container.dataset.prop;
       url = `${apiBase}?sup=${supplier}&prop=${prop}`;
       
       if (container.dataset.limit) {
@@ -214,7 +247,7 @@
       }
       
       const data = await response.json();
-      return processProperties(data, detailBaseUrl);
+      return processProperties(data, detailBaseUrl, imageBaseUrl);
     } catch (error) {
       console.error('物件情報の読み込みに失敗しました:', error);
       throw error;
@@ -228,6 +261,17 @@
     // Return a promise that resolves with property data for each container
     return Promise.all(
       document.querySelectorAll('.rals-widget').map(async (container) => {
+        // Validate required data attributes before processing
+        if (!container.dataset.api) {
+          throw new Error('API base URL is required. Set data-api attribute.');
+        }
+        if (!container.dataset.detailUrl) {
+          throw new Error('Detail page base URL is required. Set data-detailUrl attribute.');
+        }
+        if (!container.dataset.imageBaseUrl) {
+          throw new Error('Image base URL is required. Set data-imageBaseUrl attribute.');
+        }
+
         const customColor = container.dataset.color;
         const customHoverColor = container.dataset.hoverColor;
         const customCardBg = container.dataset.cardBg;

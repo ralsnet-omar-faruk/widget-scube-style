@@ -96,23 +96,23 @@
   // Process property data and return structured data object
   function processPropertyData(item, detailBaseUrl, imageBaseUrl) {
     if (!item.buildingName) {
-      console.warn("物件をスキップ: Building Name がありません", item);
+      //console.warn("物件をスキップ: Building Name がありません", item);
       return null;
     }
     if (!item.buildingMasterId) {
-      console.warn("物件をスキップ: Building Master ID がありません", item);
+      //console.warn("物件をスキップ: Building Master ID がありません", item);
       return null;
     }
     if (!item.supplierId) {
-      console.warn("物件をスキップ: Supplier ID がありません", item);
+      //console.warn("物件をスキップ: Supplier ID がありません", item);
       return null;
     }
     if (!item.buildingId) {
-      console.warn("物件をスキップ: Building ID がありません", item);
+      //console.warn("物件をスキップ: Building ID がありません", item);
       return null;
     }
     if (!item.propertyId) {
-      console.warn("物件をスキップ: Property ID がありません", item);
+      //console.warn("物件をスキップ: Property ID がありません", item);
       return null;
     }
 
@@ -288,11 +288,11 @@
 
       // Log if we filtered out any invalid properties
       if (data && data.length > processedData.length) {
-        console.warn(
-          `Filtered out ${
-            data.length - processedData.length
-          } invalid properties from ${data.length} total properties`
-        );
+        // console.warn(
+        //   `Filtered out ${
+        //     data.length - processedData.length
+        //   } invalid properties from ${data.length} total properties`
+        // );
       }
 
       // If we requested more properties to account for filtering, limit the results

@@ -11,7 +11,7 @@
     
     <!-- Widget Container with data-query (new flexible way) -->
     <div class="rals-widget" 
-         data-query="prop=0&sup=2000&limit=4">
+         data-query="prop=2&sup=2000&limit=4">
         <!-- Card Template - This will be populated by JavaScript -->
         <div class="properties-grid" style="display: none;">
             <div class="property-cards">
@@ -20,10 +20,14 @@
                         <img class="property-img" src="" alt="">
                     </div>
                     <div class="property-info">
-                        <!-- Control field display with data-show attributes -->
-                        <div class="property-rent" data-show="true" data-field="price"></div>
-                        <div class="property-details" data-show="true" data-fields="traffic,address,area"></div>
-                        <a href="" target="_blank" rel="noopener noreferrer" class="property-detail-btn" data-show="true" data-field="detailUrl">
+                        <!-- All fields use placeholder format -->
+                        <div class="property-rent">{price}</div>
+                        <div class="property-details">
+                            <span>{traffic}</span><br>
+                            <span>{address}</span><br>
+                            <span>{area}</span>
+                        </div>
+                        <a href="{detailUrl}" target="_blank" rel="noopener noreferrer" class="property-detail-btn">
                             物件詳細を見る
                         </a>
                     </div>
@@ -31,6 +35,7 @@
             </div>
         </div>
     </div>
+    
     <script src="rals-widget3.js"></script>
     <script src="widget-renderer.js"></script>
 </body>

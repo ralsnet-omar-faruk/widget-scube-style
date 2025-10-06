@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RALS Widget 3 - Template Examples</title>
+    <link rel="stylesheet" href="rals-widget.css">
+    <style>
+        .example-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .example-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .template-code {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>RALS Widget 3 - Versatile Template System</h1>
+    
+    <div class="example-section">
+        <div class="example-title">Example 1: All Elements Except Title</div>
+        <div class="template-code">&lt;div class="property-card"&gt;
+    &lt;div class="property-image"&gt;
+        &lt;img class="property-img" src="" alt=""&gt;
+    &lt;/div&gt;
+    &lt;div class="property-info"&gt;
+        &lt;div class="property-rent"&gt;{price}&lt;/div&gt;
+        &lt;div class="property-details"&gt;
+            &lt;span&gt;{traffic}&lt;/span&gt;&lt;br&gt;
+            &lt;span&gt;{address}&lt;/span&gt;&lt;br&gt;
+            &lt;span&gt;{area}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;a href="{detailUrl}" class="property-detail-btn"&gt;物件詳細を見る&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div>
+        <div class="rals-widget" data-query="prop=0&sup=2000&limit=4">
+            <div class="properties-grid" style="display: none;">
+                <div class="property-cards">
+                    <div class="property-card">
+                        <div class="property-image">
+                            <img class="property-img" src="" alt="">
+                        </div>
+                        <div class="property-info">
+                            <div class="property-rent">{price}</div>
+                            <div class="property-details">
+                                <span>{traffic}</span><br>
+                                <span>{address}</span><br>
+                                <span>{area}</span>
+                            </div>
+                            <a href="{detailUrl}" target="_blank" rel="noopener noreferrer" class="property-detail-btn">物件詳細を見る</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="example-section">
+        <div class="example-title">Example 2: Minimal Template (Image + Price Only)</div>
+        <div class="template-code">&lt;div class="property-card"&gt;
+    &lt;div class="property-image"&gt;
+        &lt;img class="property-img" src="" alt=""&gt;
+    &lt;/div&gt;
+    &lt;div class="property-info"&gt;
+        &lt;div class="property-rent"&gt;{price}&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div>
+        <div class="rals-widget" data-query="prop=0&sup=2000&limit=4">
+            <div class="properties-grid" style="display: none;">
+                <div class="property-cards">
+                    <div class="property-card">
+                        <div class="property-image">
+                            <img class="property-img" src="" alt="">
+                        </div>
+                        <div class="property-info">
+                            <div class="property-rent">{price}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="example-section">
+        <div class="example-title">Example 3: Title + Details Only</div>
+        <div class="template-code">&lt;div class="property-card"&gt;
+    &lt;div class="property-info"&gt;
+        &lt;div class="property-title"&gt;{title}&lt;/div&gt;
+        &lt;div class="property-details"&gt;
+            &lt;span&gt;{traffic}&lt;/span&gt;&lt;br&gt;
+            &lt;span&gt;{address}&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div>
+        <div class="rals-widget" data-query="prop=0&sup=2000&limit=4">
+            <div class="properties-grid" style="display: none;">
+                <div class="property-cards">
+                    <div class="property-card">
+                        <div class="property-info">
+                            <div class="property-title">{title}</div>
+                            <div class="property-details">
+                                <span>{traffic}</span><br>
+                                <span>{address}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="example-section">
+        <div class="example-title">Example 4: Custom Button Text</div>
+        <div class="template-code">&lt;div class="property-card"&gt;
+    &lt;div class="property-info"&gt;
+        &lt;div class="property-title"&gt;{title}&lt;/div&gt;
+        &lt;a href="{detailUrl}" class="property-detail-btn"&gt;物件詳細を見る&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div>
+        <div class="rals-widget" data-query="prop=0&sup=2000&limit=4" data-detailButtonText="詳細を見る">
+            <div class="properties-grid" style="display: none;">
+                <div class="property-cards">
+                    <div class="property-card">
+                        <div class="property-info">
+                            <div class="property-title">{title}</div>
+                            <a href="{detailUrl}" target="_blank" rel="noopener noreferrer" class="property-detail-btn">物件詳細を見る</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="rals-widget3.js"></script>
+    <script src="widget-renderer.js"></script>
+</body>
+</html>

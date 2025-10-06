@@ -223,6 +223,18 @@
     if (container.dataset.query) {
       // Use custom query string
       url = `${apiBase}?${container.dataset.query}`;
+      
+      // If limit is specified, request more properties to account for filtering
+      const queryParams = new URLSearchParams(container.dataset.query);
+      const limit = queryParams.get('limit');
+      if (limit) {
+        const limitNum = parseInt(limit);
+        if (limitNum > 0) {
+          // Request 2x the limit to account for properties that might be filtered out
+          queryParams.set('limit', (limitNum * 2).toString());
+          url = `${apiBase}?${queryParams.toString()}`;
+        }
+      }
     } else {
       // Use individual data attributes (backward compatibility)
       if (!container.dataset.supplier) {
@@ -254,6 +266,18 @@
       // Log if we filtered out any invalid properties
       if (data && data.length > processedData.length) {
         console.warn(`Filtered out ${data.length - processedData.length} invalid properties from ${data.length} total properties`);
+      }
+      
+      // If we requested more properties to account for filtering, limit the results
+      if (container.dataset.query) {
+        const queryParams = new URLSearchParams(container.dataset.query);
+        const originalLimit = queryParams.get('limit');
+        if (originalLimit) {
+          const limitNum = parseInt(originalLimit);
+          if (limitNum > 0 && processedData.length > limitNum) {
+            return processedData.slice(0, limitNum);
+          }
+        }
       }
       
       return processedData;
@@ -312,12 +336,211 @@
     );
   }
 
+  // Performance optimization: Render properties in batches
+  async function renderPropertiesBatch(container, properties, templateHTML, startIndex = 0, batchSize = 50) {
+    const endIndex = Math.min(startIndex + batchSize, properties.length);
+    const batch = properties.slice(startIndex, endIndex);
+    
+    const cardsHTML = batch.map(property => {
+      // Create a temporary div to parse the template
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = templateHTML;
+      const card = tempDiv.firstElementChild;
+      
+      // Handle image with fallback
+      const img = card.querySelector('.property-img');
+      if (img) {
+        if (property.thumbnailUrl && property.thumbnailUrl.trim() !== '') {
+          img.src = property.thumbnailUrl;
+        } else {
+          // Use fallback from container data attribute (set by widget-renderer.js)
+          img.src = container.dataset.fallbackImageUrl;
+        }
+        img.alt = property.title || 'Property Image';
+      }
+      // If property-img element doesn't exist in template, it won't be displayed (graceful handling)
+      
+      // Handle property title - controlled by HTML template data attributes
+      const title = card.querySelector('.property-title');
+      if (title) {
+        const showInTemplate = title.dataset.show === 'true';
+        const fieldName = title.dataset.field;
+        const shouldShow = showInTemplate && property.title && property.title.trim() !== '';
+        
+        if (shouldShow && fieldName === 'title') {
+          title.textContent = property.title;
+          title.style.display = 'block';
+        } else {
+          title.style.display = 'none';
+        }
+      }
+      // If property-title element doesn't exist in template, it won't be displayed (graceful handling)
+      
+      // Handle rent price - replace {price} placeholder
+      const rent = card.querySelector('.property-rent');
+      if (rent) {
+        if (property.price && property.price.trim() !== '') {
+          rent.textContent = property.price;
+          rent.style.display = 'block';
+        } else {
+          rent.style.display = 'none';
+        }
+      }
+      // If rent element doesn't exist in template, it won't be displayed (graceful handling)
+      
+      // Handle property details - replace placeholders
+      const details = card.querySelector('.property-details');
+      if (details) {
+        let detailsContent = details.innerHTML;
+        
+        // Replace placeholders with actual data
+        detailsContent = detailsContent.replace('{traffic}', property.traffic || '');
+        detailsContent = detailsContent.replace('{address}', property.address || '');
+        detailsContent = detailsContent.replace('{area}', property.area || '');
+        
+        // Clean up empty lines and trailing breaks
+        detailsContent = detailsContent.replace(/<br><br>/g, '<br>').replace(/^<br>|<br>$/g, '');
+        
+        if (detailsContent.trim() !== '') {
+          details.innerHTML = detailsContent;
+          details.style.display = 'block';
+        } else {
+          details.style.display = 'none';
+        }
+      }
+      // If property-details element doesn't exist in template, it won't be displayed (graceful handling)
+      
+      // Handle detail link - replace placeholder
+      const link = card.querySelector('.property-detail-btn');
+      if (link) {
+        if (property.detailUrl && property.detailUrl.trim() !== '') {
+          link.href = property.detailUrl;
+          // Use text from container data attribute or default
+          link.textContent = container.dataset.detailButtonText || '物件詳細を見る';
+          link.style.display = 'block';
+        } else {
+          link.style.display = 'none';
+        }
+      }
+      // If property-detail-btn element doesn't exist in template, it won't be displayed (graceful handling)
+      
+      return card.outerHTML;
+    }).join('');
+    
+    return cardsHTML;
+  }
+
+  // Main function to render widget with data
+  async function renderWidget(container) {
+    try {
+      // Get the template from HTML BEFORE clearing the container
+      const template = container.querySelector('.property-card');
+      if (!template) {
+        console.error('Template not found in HTML');
+        return;
+      }
+      
+      // Store the template HTML for later use
+      const templateHTML = template.outerHTML;
+      
+      // Show loading message
+      const loadingMessage = container.dataset.loadingMessage || '物件を読み込み中...';
+      container.innerHTML = `<p>${loadingMessage}</p>`;
+      
+      // Fetch property data using the widget
+      let properties;
+      try {
+        properties = await fetchPropertyData(container);
+      } catch (error) {
+        console.error('Error fetching property data:', error);
+        const errorMessage = container.dataset.errorMessage || '物件情報の読み込みに失敗しました。しばらくしてから再度お試しください。';
+        container.innerHTML = `<p>${errorMessage}</p>`;
+        return;
+      }
+      
+      if (!properties || properties.length === 0) {
+        const noPropertiesMessage = container.dataset.noPropertiesMessage || '物件が見つかりません。';
+        container.innerHTML = `<p>${noPropertiesMessage}</p>`;
+        return;
+      }
+      
+      // Add container class
+      container.classList.add('rals-widget-container');
+      
+      // Performance optimization: Check if we have a large dataset
+      const isLargeDataset = properties.length > 100;
+      const batchSize = isLargeDataset ? 50 : properties.length;
+      
+      // Add large dataset attribute for CSS optimizations
+      if (isLargeDataset) {
+        container.setAttribute('data-large-dataset', 'true');
+      }
+      
+      if (isLargeDataset) {
+        // For large datasets, show progressive loading
+        container.innerHTML = `
+          <div class="properties-grid">
+            <div class="property-cards"></div>
+            <div class="loading-progress" style="text-align: center; padding: 2rem; color: #666;">
+              Loading ${properties.length} properties... (0/${properties.length})
+            </div>
+          </div>
+        `;
+        
+        const cardsContainer = container.querySelector('.property-cards');
+        const progressElement = container.querySelector('.loading-progress');
+        
+        // Render in batches to prevent browser freezing
+        for (let i = 0; i < properties.length; i += batchSize) {
+          const cardsHTML = await renderPropertiesBatch(container, properties, templateHTML, i, batchSize);
+          cardsContainer.insertAdjacentHTML('beforeend', cardsHTML);
+          
+          // Update progress
+          const loaded = Math.min(i + batchSize, properties.length);
+          progressElement.textContent = `Loading ${properties.length} properties... (${loaded}/${properties.length})`;
+          
+          // Allow browser to process other tasks
+          await new Promise(resolve => setTimeout(resolve, 10));
+        }
+        
+        // Remove progress indicator
+        progressElement.remove();
+      } else {
+        // For small datasets, render all at once
+        const cardsHTML = await renderPropertiesBatch(container, properties, templateHTML, 0, properties.length);
+        container.innerHTML = `
+          <div class="properties-grid">
+            <div class="property-cards">
+              ${cardsHTML}
+            </div>
+          </div>
+        `;
+      }
+      
+    } catch (error) {
+      console.error('Error loading properties:', error);
+      const errorMessage = container.dataset.errorMessage || '物件情報の読み込みに失敗しました。しばらくしてから再度お試しください。';
+      container.innerHTML = `<p>${errorMessage}</p>`;
+    }
+  }
+
+  // Auto-initialize all widgets when DOM is ready
+  function initAllWidgets() {
+    const containers = document.querySelectorAll('.rals-widget');
+    containers.forEach(container => {
+      renderWidget(container);
+    });
+  }
+
   // Expose the main function globally
   window.RalsWidget3 = {
     init,
     fetchPropertyData,
     processPropertyData,
-    processProperties
+    processProperties,
+    renderWidget,
+    renderPropertiesBatch,
+    initAllWidgets
   };
 
   // Don't auto-initialize - let the HTML handle it

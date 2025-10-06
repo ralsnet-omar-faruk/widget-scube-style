@@ -24,14 +24,12 @@
 
  function formatArea(area) {
    if (!area) return "";
-
-   // Convert from square meters to tsubo (坪)
    const tsubo = area / TSUBO_PER_SQUARE_METER;
    const roundedTsubo = Math.round(tsubo * 10) / 10;
 
    return `${roundedTsubo}坪(${area}㎡)`;
  }
-  // Get traffic information from jsonTraffic field (like uchiike does)
+  // Get traffic information from jsonTraffic field 
   function getTrafficInfo(item) {
     if (
       item.jsonTraffic &&
@@ -61,7 +59,6 @@
 
         // Handle bus stops
         if (firstTraffic.bus_info && firstTraffic.transport_min_bus) {
-          // Clean up the bus info (remove extra spaces)
           const busInfo = firstTraffic.bus_info.trim();
           return `${busInfo}(徒歩${firstTraffic.transport_min_bus}分)`;
         }
@@ -98,7 +95,6 @@
 
   // Process property data and return structured data object
   function processPropertyData(item, detailBaseUrl, imageBaseUrl) {
-    // Validate required fields - return null for invalid data instead of throwing
     if (!item.buildingName) {
       console.warn("物件をスキップ: Building Name がありません", item);
       return null;
@@ -430,7 +426,6 @@
             title.style.display = "none";
           }
         }
-        // If property-title element doesn't exist in template, it won't be displayed (graceful handling)
 
         // Handle rent price - replace {price} placeholder
         const rent = card.querySelector(".property-rent");
@@ -442,7 +437,6 @@
             rent.style.display = "none";
           }
         }
-        // If rent element doesn't exist in template, it won't be displayed (graceful handling)
 
   
         // Handle property details 
@@ -478,7 +472,6 @@
             details.style.display = "none";
           }
         }
-        // If property-details element doesn't exist in template, it won't be displayed (graceful handling)
 
         // Handle detail link - replace placeholder
         const link = card.querySelector(".property-detail-btn");
@@ -493,7 +486,6 @@
             link.style.display = "none";
           }
         }
-        // If property-detail-btn element doesn't exist in template, it won't be displayed (graceful handling)
 
         return card.outerHTML;
       })

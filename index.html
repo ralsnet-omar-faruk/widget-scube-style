@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RALS Widget 3 - Template Based</title>
-    <link rel="stylesheet" href="rals-widget.css">
-</head>
-<body>
+    <link rel="stylesheet" href="assets/rals-widget.css" />
+  </head>
+  <body>
     <h1>RALS Widget 3 - Template Based</h1>
-    
-    <!-- Widget Container with data-query (new flexible way) -->
-    <div class="rals-widget" 
-         data-query="prop=2&sup=2000&limit=16">
-        <!-- Card Template - This will be populated by JavaScript -->
-        <div class="properties-grid" style="display: none;">
-            <div class="property-cards">
-                <div class="property-card">
-                    <div class="property-image">
-                        <img class="property-img" src="" alt="">
-                    </div>
-                    <div class="property-info">
-                        <!-- All fields use placeholder format -->
-                        <div class="property-rent">{price}</div>
-                        <div class="property-details">
-                            {traffic}<br>
-                            {address}<br>
-                            {area}
-                        </div>
-                        <a href="{detailUrl}" target="_blank" rel="noopener noreferrer" class="property-detail-btn">
-                            物件詳細を見る
-                        </a>
-                    </div>
-                </div>
+    <div class="rals-widget" data-query="prop=2&sup=2000&limit=16">
+      <div class="properties-grid" style="display: none">
+        <div class="property-cards">
+          <div class="property-card">
+            <div class="property-image">
+              <img class="property-img" src="" alt="" />
             </div>
+            <div class="property-info">
+              <div class="property-rent">{price}</div>
+              <div class="property-details">
+                <span>{traffic}</span><br />
+                <span>{address}</span><br />
+                <span>{area}</span>
+              </div>
+              <a
+                href="{detailUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="property-detail-btn"
+              >
+                物件詳細を見る
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-    
-    <script src="rals-widget3.js"></script>
-    <script src="widget-renderer.js"></script>
-</body>
+
+    <script src="assets/rals-widget-cube.js"></script>
+    <script src="assets/rals-widget-cube-config.js"></script>
+  </body>
 </html>

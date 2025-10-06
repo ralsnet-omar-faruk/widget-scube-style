@@ -1,11 +1,7 @@
-// Widget Renderer - Company-specific configuration system
-// This file handles company-specific settings and applies them to widgets
 (function() {
     'use strict';
 
-    // COMPANY CONFIGURATION - Adjust these settings per company
     const COMPANY_CONFIG = {
-        // API Configuration
         apiBaseUrl: 'https://ralsnet.example.formatline.com/wp-json/rengodb/v1/search-properties',
         detailPageBaseUrl: 'https://ralsnet.example.formatline.com/property/',
         imageBaseUrl: 'https://pic.cbiz.ne.jp/pic/',
@@ -30,7 +26,6 @@
 
     // Apply company configuration to a widget container
     function applyCompanyConfig(container) {
-        // Set data attributes from company configuration if not already set
         if (!container.dataset.api) {
             container.dataset.api = COMPANY_CONFIG.apiBaseUrl;
         }
@@ -43,8 +38,7 @@
         if (!container.dataset.fallbackImageUrl) {
             container.dataset.fallbackImageUrl = COMPANY_CONFIG.fallbackImageUrl;
         }
-        
-        // Set text messages from config
+
         if (!container.dataset.loadingMessage) {
             container.dataset.loadingMessage = COMPANY_CONFIG.texts.loadingMessage;
         }
@@ -57,8 +51,7 @@
         if (!container.dataset.detailButtonText) {
             container.dataset.detailButtonText = COMPANY_CONFIG.texts.detailButtonText;
         }
-        
-        // Apply custom styling from config
+   
         if (COMPANY_CONFIG.customColors.mainColor) {
             container.style.setProperty('--rals-main-color', COMPANY_CONFIG.customColors.mainColor);
         }
@@ -99,7 +92,7 @@
         Object.assign(COMPANY_CONFIG, newConfig);
     }
 
-    // Expose functions globally for manual use
+    // Expose functions globally
     window.RalsWidgetRenderer = {
         renderWidget: renderWidgetWithCompanyConfig,
         initAllWidgets,

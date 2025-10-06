@@ -10,18 +10,7 @@
         detailPageBaseUrl: 'https://ralsnet.example.formatline.com/property/',
         imageBaseUrl: 'https://pic.cbiz.ne.jp/pic/',
         fallbackImageUrl: 'https://ralsnet.example.formatline.com/app/plugins/wp-rengodb/assets/img/noimg.png',
-        
-        // Default Query Parameters
-        defaultSupplier: '1370',
-        defaultProp: '2',
-        defaultLimit: '16',
-        
-        // Display Configuration
-        showPrice: true,
-        showTraffic: true,
-        showAddress: true,
-        showArea: true,
-        showDetailButton: true,
+ 
         
         // Custom Styling
         customColors: {
@@ -33,11 +22,110 @@
         // Text Customization
         texts: {
             loadingMessage: '物件を読み込み中...',
-            noPropertiesMessage: 'No properties found.',
+            noPropertiesMessage: '物件が見つかりません。',
             errorMessage: '物件情報の読み込みに失敗しました。しばらくしてから再度お試しください。',
             detailButtonText: '物件詳細を見る'
         }
     };
+
+    // Performance optimization: Render properties in batches
+    async function renderPropertiesBatch(container, properties, templateHTML, startIndex = 0, batchSize = 50) {
+        const endIndex = Math.min(startIndex + batchSize, properties.length);
+        const batch = properties.slice(startIndex, endIndex);
+        
+        const cardsHTML = batch.map(property => {
+            // Create a temporary div to parse the template
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = templateHTML;
+            const card = tempDiv.firstElementChild;
+            
+            // Handle image with fallback using config
+            const img = card.querySelector('.property-img');
+            if (img) {
+                if (property.thumbnailUrl && property.thumbnailUrl.trim() !== '') {
+                    img.src = property.thumbnailUrl;
+                } else {
+                    img.src = COMPANY_CONFIG.fallbackImageUrl;
+                }
+                img.alt = property.title || 'Property Image';
+            }
+            
+            // Handle property title - controlled by HTML template data attributes
+            const title = card.querySelector('.property-title');
+            if (title) {
+                const showInTemplate = title.dataset.show === 'true';
+                const fieldName = title.dataset.field;
+                const shouldShow = showInTemplate && property.title && property.title.trim() !== '';
+                
+                if (shouldShow && fieldName === 'title') {
+                    title.textContent = property.title;
+                    title.style.display = 'block';
+                } else {
+                    title.style.display = 'none';
+                }
+            }
+            
+            // Handle rent price - controlled by HTML template data attributes
+            const rent = card.querySelector('.property-rent');
+            if (rent) {
+                const showInTemplate = rent.dataset.show === 'true';
+                const fieldName = rent.dataset.field;
+                const shouldShow = showInTemplate && property.price && property.price.trim() !== '';
+                
+                if (shouldShow && fieldName === 'price') {
+                    rent.textContent = property.price;
+                    rent.style.display = 'block';
+                } else {
+                    rent.style.display = 'none';
+                }
+            }
+            
+            // Handle property details - controlled by HTML template data attributes
+            const details = card.querySelector('.property-details');
+            if (details) {
+                const showInTemplate = details.dataset.show === 'true';
+                const fieldsToShow = details.dataset.fields ? details.dataset.fields.split(',') : [];
+                let detailsContent = '';
+                
+                if (showInTemplate && fieldsToShow.includes('traffic') && property.traffic && property.traffic.trim() !== '') {
+                    detailsContent += `${property.traffic}<br>`;
+                }
+                if (showInTemplate && fieldsToShow.includes('address') && property.address && property.address.trim() !== '') {
+                    detailsContent += `${property.address}<br>`;
+                }
+                if (showInTemplate && fieldsToShow.includes('area') && property.area && property.area.trim() !== '') {
+                    detailsContent += property.area;
+                }
+                
+                if (detailsContent.trim() !== '') {
+                    details.innerHTML = detailsContent;
+                    details.style.display = 'block';
+                } else {
+                    details.style.display = 'none';
+                }
+            }
+            
+            // Handle detail link - controlled by HTML template data attributes
+            const link = card.querySelector('.property-detail-btn');
+            if (link) {
+                const showInTemplate = link.dataset.show === 'true';
+                const fieldName = link.dataset.field;
+                const shouldShow = showInTemplate && property.detailUrl && property.detailUrl.trim() !== '';
+                
+                if (shouldShow && fieldName === 'detailUrl') {
+                    link.href = property.detailUrl;
+                    link.textContent = COMPANY_CONFIG.texts.detailButtonText;
+                    link.style.display = 'block';
+                } else {
+                    link.style.display = 'none';
+                }
+            }
+            
+            return card.outerHTML;
+        }).join('');
+        
+        return cardsHTML;
+    }
 
     // Main function to render widget with data
     async function renderWidget(container) {
@@ -78,7 +166,14 @@
             }
             
             // Fetch property data using the widget
-            const properties = await window.RalsWidget3.fetchPropertyData(container);
+            let properties;
+            try {
+                properties = await window.RalsWidget3.fetchPropertyData(container);
+            } catch (error) {
+                console.error('Error fetching property data:', error);
+                container.innerHTML = `<p>${COMPANY_CONFIG.texts.errorMessage}</p>`;
+                return;
+            }
             
             if (!properties || properties.length === 0) {
                 container.innerHTML = `<p>${COMPANY_CONFIG.texts.noPropertiesMessage}</p>`;
@@ -88,78 +183,55 @@
             // Add container class
             container.classList.add('rals-widget-container');
             
-            // Recreate the structure
-            container.innerHTML = `
-                <div class="properties-grid">
-                    <div class="property-cards">
-                        ${properties.map(property => {
-                            // Create a temporary div to parse the template
-                            const tempDiv = document.createElement('div');
-                            tempDiv.innerHTML = templateHTML;
-                            const card = tempDiv.firstElementChild;
-                            
-                            // Handle image with fallback using config
-                            const img = card.querySelector('.property-img');
-                            if (img) {
-                                if (property.thumbnailUrl && property.thumbnailUrl.trim() !== '') {
-                                    img.src = property.thumbnailUrl;
-                                } else {
-                                    img.src = COMPANY_CONFIG.fallbackImageUrl;
-                                }
-                                img.alt = property.title || 'Property Image';
-                            }
-                            
-                            // Handle rent price - only show if available and enabled in config
-                            const rent = card.querySelector('.property-rent');
-                            if (rent) {
-                                if (COMPANY_CONFIG.showPrice && property.price && property.price.trim() !== '') {
-                                    rent.textContent = property.price;
-                                    rent.style.display = 'block';
-                                } else {
-                                    rent.style.display = 'none';
-                                }
-                            }
-                            
-                            // Handle property details - only show if available and enabled in config
-                            const details = card.querySelector('.property-details');
-                            if (details) {
-                                let detailsContent = '';
-                                
-                                if (COMPANY_CONFIG.showTraffic && property.traffic && property.traffic.trim() !== '') {
-                                    detailsContent += `${property.traffic}<br>`;
-                                }
-                                if (COMPANY_CONFIG.showAddress && property.address && property.address.trim() !== '') {
-                                    detailsContent += `${property.address}<br>`;
-                                }
-                                if (COMPANY_CONFIG.showArea && property.area && property.area.trim() !== '') {
-                                    detailsContent += property.area;
-                                }
-                                
-                                if (detailsContent.trim() !== '') {
-                                    details.innerHTML = detailsContent;
-                                    details.style.display = 'block';
-                                } else {
-                                    details.style.display = 'none';
-                                }
-                            }
-                            
-                            // Handle detail link - only show if available and enabled in config
-                            const link = card.querySelector('.property-detail-btn');
-                            if (link) {
-                                if (COMPANY_CONFIG.showDetailButton && property.detailUrl && property.detailUrl.trim() !== '') {
-                                    link.href = property.detailUrl;
-                                    link.textContent = COMPANY_CONFIG.texts.detailButtonText;
-                                    link.style.display = 'block';
-                                } else {
-                                    link.style.display = 'none';
-                                }
-                            }
-                            
-                            return card.outerHTML;
-                        }).join('')}
+            // Performance optimization: Check if we have a large dataset
+            const isLargeDataset = properties.length > 100;
+            const batchSize = isLargeDataset ? 50 : properties.length;
+            
+            // Add large dataset attribute for CSS optimizations
+            if (isLargeDataset) {
+                container.setAttribute('data-large-dataset', 'true');
+            }
+            
+            if (isLargeDataset) {
+                // For large datasets, show progressive loading
+                container.innerHTML = `
+                    <div class="properties-grid">
+                        <div class="property-cards"></div>
+                        <div class="loading-progress" style="text-align: center; padding: 2rem; color: #666;">
+                            Loading ${properties.length} properties... (0/${properties.length})
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+                
+                const cardsContainer = container.querySelector('.property-cards');
+                const progressElement = container.querySelector('.loading-progress');
+                
+                // Render in batches to prevent browser freezing
+                for (let i = 0; i < properties.length; i += batchSize) {
+                    const cardsHTML = await renderPropertiesBatch(container, properties, templateHTML, i, batchSize);
+                    cardsContainer.insertAdjacentHTML('beforeend', cardsHTML);
+                    
+                    // Update progress
+                    const loaded = Math.min(i + batchSize, properties.length);
+                    progressElement.textContent = `Loading ${properties.length} properties... (${loaded}/${properties.length})`;
+                    
+                    // Allow browser to process other tasks
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+                
+                // Remove progress indicator
+                progressElement.remove();
+            } else {
+                // For small datasets, render all at once
+                const cardsHTML = await renderPropertiesBatch(container, properties, templateHTML, 0, properties.length);
+                container.innerHTML = `
+                    <div class="properties-grid">
+                        <div class="property-cards">
+                            ${cardsHTML}
+                        </div>
+                    </div>
+                `;
+            }
             
         } catch (error) {
             console.error('Error loading properties:', error);

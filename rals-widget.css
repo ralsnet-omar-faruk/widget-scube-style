@@ -14,6 +14,9 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
+  /* Performance optimizations for large datasets */
+  contain: layout style paint;
+  will-change: transform;
 }
 
 .property-card {
@@ -25,6 +28,9 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  /* Performance optimizations for large datasets */
+  contain: layout style paint;
+  will-change: transform;
 }
 
 .property-card:hover {
@@ -74,6 +80,20 @@
   flex-direction: column;
   flex-grow: 1;
   min-height: 0;
+}
+
+.property-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .property-rent {
@@ -141,6 +161,10 @@
     padding: 0.8rem;
   }
 
+  .property-title {
+    font-size: 0.9rem;
+  }
+
   .property-rent {
     font-size: 1rem;
   }
@@ -169,6 +193,10 @@
     padding: 0.7rem;
   }
 
+  .property-title {
+    font-size: 0.85rem;
+  }
+
   .property-rent {
     font-size: 0.9rem;
   }
@@ -181,4 +209,66 @@
     padding: 0.6rem 0.8rem;
     font-size: 0.8rem;
   }
+}
+
+/* Performance optimizations for large datasets */
+.loading-progress {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #e9ecef;
+}
+
+.loading-progress::after {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Performance monitoring */
+.performance-info {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: monospace;
+  font-size: 12px;
+  z-index: 1000;
+  max-width: 200px;
+}
+
+/* Large dataset optimizations */
+.rals-widget-container[data-large-dataset="true"] .property-cards {
+  /* Reduce animations for large datasets */
+  transition: none;
+}
+
+.rals-widget-container[data-large-dataset="true"] .property-card {
+  /* Reduce hover effects for better performance */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rals-widget-container[data-large-dataset="true"] .property-card:hover {
+  /* Simplified hover effect for large datasets */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }

@@ -1,13 +1,6 @@
 (function () {
-  // No default URLs - all must be provided via data attributes
-
   function loadCSS() {
-    if (document.querySelector('link[data-rals="css"]')) return;
-    const l = document.createElement('link');
-    l.rel = 'stylesheet';
-    l.href = 'https://ralsnet-omar-faruk.github.io/property-top-corner/assets/rals-widget.css';
-    l.setAttribute('data-rals', 'css');
-    document.head.appendChild(l);
+    return;
   }
 
   // Format price in 万 format with comma-separated remainder
@@ -97,21 +90,26 @@
 
   // Process property data and return structured data object
   function processPropertyData(item, detailBaseUrl, imageBaseUrl) {
-    // Validate required fields
+    // Validate required fields - return null for invalid data instead of throwing
     if (!item.buildingName) {
-      throw new Error('Building name is required in property data.');
+      console.warn('物件をスキップ: Building Name がありません', item);
+      return null;
     }
     if (!item.buildingMasterId) {
-      throw new Error('Building master ID is required in property data.');
+      console.warn('物件をスキップ: Building Master ID がありません', item);
+      return null;
     }
     if (!item.supplierId) {
-      throw new Error('Supplier ID is required in property data.');
+      console.warn('物件をスキップ: Supplier ID がありません', item);
+      return null;
     }
     if (!item.buildingId) {
-      throw new Error('Building ID is required in property data.');
+      console.warn('物件をスキップ: Building ID がありません', item);
+      return null;
     }
     if (!item.propertyId) {
-      throw new Error('Property ID is required in property data.');
+      console.warn('物件をスキップ: Property ID がありません', item);
+      return null;
     }
 
     const title = item.buildingName;
@@ -196,7 +194,10 @@
     if (!list || !list.length) {
       return [];
     }
-    return list.map(item => processPropertyData(item, detailBaseUrl, imageBaseUrl));
+    // Filter out null values (invalid properties) and only return valid ones
+    return list
+      .map(item => processPropertyData(item, detailBaseUrl, imageBaseUrl))
+      .filter(item => item !== null);
   }
 
   // Main function to fetch and return processed property data
@@ -243,14 +244,22 @@
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`APIエラー: ステータス ${response.status} が返されました。`);
+        console.error(`APIエラー: ステータス ${response.status} が返されました。`);
+        return []; // Return empty array instead of throwing
       }
       
       const data = await response.json();
-      return processProperties(data, detailBaseUrl, imageBaseUrl);
+      const processedData = processProperties(data, detailBaseUrl, imageBaseUrl);
+      
+      // Log if we filtered out any invalid properties
+      if (data && data.length > processedData.length) {
+        console.warn(`Filtered out ${data.length - processedData.length} invalid properties from ${data.length} total properties`);
+      }
+      
+      return processedData;
     } catch (error) {
       console.error('物件情報の読み込みに失敗しました:', error);
-      throw error;
+      return []; // Return empty array instead of throwing to prevent widget crash
     }
   }
 

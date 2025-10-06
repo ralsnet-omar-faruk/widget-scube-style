@@ -11,18 +11,19 @@
     
     <!-- Widget Container with data-query (new flexible way) -->
     <div class="rals-widget" 
-         data-query="prop=2&sup=1370&limit=16">
+         data-query="prop=0&sup=2000&limit=4">
         <!-- Card Template - This will be populated by JavaScript -->
         <div class="properties-grid" style="display: none;">
             <div class="property-cards">
                 <div class="property-card">
                     <div class="property-image">
-                        <img class="property-img" src="" alt="" onerror="this.src='https://ralsnet.example.formatline.com/app/plugins/wp-rengodb/assets/img/noimg.png'">
+                        <img class="property-img" src="" alt="">
                     </div>
                     <div class="property-info">
-                        <div class="property-rent"></div>
-                        <div class="property-details"></div>
-                        <a href="" target="_blank" rel="noopener noreferrer" class="property-detail-btn">
+                        <!-- Control field display with data-show attributes -->
+                        <div class="property-rent" data-show="true" data-field="price"></div>
+                        <div class="property-details" data-show="true" data-fields="traffic,address,area"></div>
+                        <a href="" target="_blank" rel="noopener noreferrer" class="property-detail-btn" data-show="true" data-field="detailUrl">
                             物件詳細を見る
                         </a>
                     </div>

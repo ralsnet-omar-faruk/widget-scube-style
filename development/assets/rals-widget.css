@@ -205,6 +205,30 @@ body {
   .rals-widget-container {
     padding: 0 1rem;
   }
+  .featured-properties-section {
+      padding: 3rem 0;
+    }
+
+    .featured-properties-inner {
+    }
+
+    .featured-properties-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .properties-grid {
+      padding-inline: 1rem;
+    }
+
+  .property-tabs {
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .property-tab {
+      padding: 0.6rem 1rem;
+      font-size: 0.9rem;
+    }
 
   .property-cards {
     grid-template-columns: repeat(2, 1fr);
@@ -235,6 +259,24 @@ body {
 }
 
 @media (max-width: 480px) {
+  .featured-properties-section {
+      padding: 2rem 0;
+    }
+
+    .featured-properties-title {
+      font-size: 1.3rem;
+    }
+
+    .property-tabs {
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .property-tab {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
   .property-cards {
     grid-template-columns: 1fr;
     gap: 1rem;

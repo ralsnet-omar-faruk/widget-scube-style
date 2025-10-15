@@ -1,5 +1,8 @@
 /* Rals Widget CSS - Fixed button positioning and containment */
 /* 新着・おすすめテナント物件セクション */
+body {
+  margin: 0;
+}
   .featured-properties-section {
     background: #f1f5f7;
     padding: 4rem 0;

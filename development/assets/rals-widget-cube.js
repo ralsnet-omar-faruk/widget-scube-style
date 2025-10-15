@@ -102,10 +102,6 @@
   // 物件データを処理して、構造化されたデータオブジェクトを返す
 
   function processPropertyData(item, detailBaseUrl, imageBaseUrl) {
-    if (!item.buildingName) {
-      if (debug) console.warn("物件をスキップ: Building Name がありません", item);
-      return null;
-    }
     if (!item.buildingMasterId) {
       if (debug) console.warn("物件をスキップ: Building Master ID がありません", item);
       return null;
@@ -125,7 +121,7 @@
 
     const isSale = item.isSale === true || item.hasOwnProperty("saleInfoId");
 
-    const title = item.buildingName;
+    const title = item.buildingName || "";
     const price = formatPrice(item.propertyPrice);
     const detailUrl = `${detailBaseUrl}${item.buildingMasterId}`;
     const address = getAddress(item);
@@ -215,7 +211,7 @@
       .filter((item) => item !== null);
   }
 
-  
+
   async function fetchPropertyData(container) {
     if (!container.dataset.api) {
       throw new Error("APIのベースURLが必要です。.");
@@ -258,7 +254,7 @@
     }
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, { cache: 'no-cache' });
       if (!response.ok) {
         console.error(
           `APIエラー: ステータス ${response.status} が返されました。`
@@ -422,7 +418,7 @@
             }
           }
 
-          
+
           const details = card.querySelector(".property-details");
           if (details) {
             details.innerHTML = "";

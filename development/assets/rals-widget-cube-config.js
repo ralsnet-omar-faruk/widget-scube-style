@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     // 会社用の設定定数
@@ -7,15 +7,15 @@
         detailPageBaseUrl: 'https://ralsnet.example.formatline.com/property/', // 物件詳細ページのベースURL
         imageBaseUrl: 'https://pic.cbiz.ne.jp/pic/', // 画像のベースURL
         fallbackImageUrl: 'https://ralsnet.example.formatline.com/app/plugins/wp-rengodb/assets/img/noimg.png', // 画像がない場合のフォールバックURL
- 
-        
+
+
         // カスタムスタイル
         customColors: {
             mainColor: '#e74c3c',
             hoverColor: '#e55a2b',
             cardBg: 'white'
         },
-        
+
         // テキストのカスタマイズ
         texts: {
             loadingMessage: '物件を読み込み中...',
@@ -52,7 +52,7 @@
         if (!container.dataset.detailButtonText) {
             container.dataset.detailButtonText = COMPANY_CONFIG.texts.detailButtonText;
         }
-   
+
         if (COMPANY_CONFIG.customColors.mainColor) {
             container.style.setProperty('--rals-main-color', COMPANY_CONFIG.customColors.mainColor);
         }
@@ -66,7 +66,7 @@
 
     async function renderWidgetWithCompanyConfig(container) {
         applyCompanyConfig(container);
-        
+
         // Use the core rendering function from RalsWidget3
         return await window.RalsWidget3.renderWidget(container);
     }

@@ -5,8 +5,21 @@
   const debug = false;
 
   // 価格を「万」単位でフォーマットする
-  function formatPrice(price) {
-    if (!price) return "価格未定";
+  function formatPrice(price, pricePrivateFlg) {
+    // Check if price is null or undefined first
+    if (price === null || price === undefined) {
+      return "見学用のため販売しておりません";
+    }
+
+    // Check if price is private
+    if (pricePrivateFlg === true || pricePrivateFlg === 1) {
+      return "お問合せ下さい";
+    }
+
+    // If price is 0 or empty, show as "価格未定"
+    if (!price || price === 0) {
+      return "価格未定";
+    }
 
     const man = Math.floor(price / 10000);
     const remainder = price % 10000;
@@ -122,7 +135,7 @@
     const isSale = item.isSale === true || item.hasOwnProperty("saleInfoId");
 
     const title = item.buildingName || "";
-    const price = formatPrice(item.propertyPrice);
+    const price = formatPrice(item.propertyPrice, item.pricePrivateFlg);
     const detailUrl = `${detailBaseUrl}${item.buildingMasterId}`;
     const address = getAddress(item);
     const traffic = getTrafficInfo(item);

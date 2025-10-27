@@ -6,17 +6,12 @@
 
   // 価格を「万」単位でフォーマットする
   function formatPrice(price, pricePrivateFlg) {
-    // Check if price is null or undefined first
     if (price === null || price === undefined) {
       return "見学用のため販売しておりません";
     }
-
-    // Check if price is private
     if (pricePrivateFlg === true || pricePrivateFlg === 1) {
       return "お問合せ下さい";
     }
-
-    // If price is 0 or empty, show as "価格未定"
     if (!price || price === 0) {
       return "価格未定";
     }

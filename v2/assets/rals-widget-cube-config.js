@@ -9,7 +9,7 @@
         fallbackImageUrl: 'https://tenpos-ft.example.formatline.com/app/plugins/wp-rengodb/assets/img/noimg.png', // 画像がない場合のフォールバックURL
         
         // コメントの最大文字数 (0 = 無制限)
-        commentMaxLength: 100, 
+        commentMaxLength: 0,
         
         // カスタムスタイル
         customColors: {

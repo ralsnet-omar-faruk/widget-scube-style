@@ -1,0 +1,163 @@
+/* ========================================
+   新着物件リスト形式 (New Properties List Style)
+   Matches postList styling from style.css
+   ======================================== */
+
+/* リスト形式のグリッド */
+.properties-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.property-list-items {
+  display: flex;
+  flex-direction: column;
+}
+
+/* postList__item と同じスタイル */
+.property-list-item {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px dotted #B3B3B3;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.property-list-item:first-of-type {
+  padding-top: 0;
+}
+
+.property-list-item:last-child {
+  border-bottom: none;
+}
+
+/* postList__link と同じスタイル */
+.property-link {
+  display: flex;
+  align-items: flex-start;
+  padding: 0;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+}
+
+.property-link:hover .property-comment {
+  color: var(--rals-main-color, #0066FF);
+  text-decoration: underline;
+}
+
+/* postList__time と同じスタイル */
+.property-date {
+  max-width: 118px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5625;
+  padding-left: 3px;
+  flex-shrink: 0;
+  color: #252525;
+}
+
+/* postList__heading と同じスタイル */
+.property-comment {
+  margin: 0;
+  padding: 0;
+  text-indent: 0px;
+  background-image: unset;
+  color: #000;
+  background-color: transparent;
+  font-size: 16px;
+  line-height: 25px;
+  font-weight: 400;
+  flex: 1;
+  word-break: break-word;
+}
+
+/* 検索ボタン - buttonBlock スタイルと同じ */
+.search-button-container {
+  max-width: 300px;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 33px;
+}
+
+.search-button-container .search-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  background-color: #000;
+  border-radius: 20px;
+  padding: 20px 0;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+  text-decoration: none;
+  width: 100%;
+}
+
+.search-button-container .search-button:hover {
+  opacity: 0.6;
+}
+
+.search-button-container .search-button span {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3125;
+  margin-right: 15px;
+}
+
+.search-button-container .search-button img,
+.search-button-container .search-button svg {
+  width: 20px;
+  height: auto;
+  margin-bottom: 0;
+}
+
+/* リスト形式のレスポンシブ */
+@media (max-width: 767px) {
+  .property-list-item {
+    flex-direction: column;
+    padding-top: 16px;
+  }
+
+  .property-list-item:first-of-type {
+    padding-top: 0;
+  }
+
+  .property-date {
+    padding-top: 0;
+    max-width: none;
+  }
+
+  .property-comment {
+    margin-top: 1px;
+  }
+
+  .property-link {
+    flex-direction: column;
+  }
+
+  .search-button {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .property-date {
+    font-size: 14px;
+  }
+
+  .property-comment {
+    font-size: 15px;
+  }
+
+  .search-button {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+    width: 100%;
+    justify-content: center;
+  }
+}

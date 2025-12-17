@@ -50,7 +50,8 @@
       
       html = html.split('{thumbnailUrl}').join(p.thumbnailUrl || '');
       html = html.split('{detailUrl}').join(p.detailUrl || '#');
-      html = html.split('{address}').join((p.address || '') + ' ' + (p.title || ''));
+      html = html.split('{address}').join(p.address || '');
+      html = html.split('{title}').join(p.title || '');
       html = html.split('{area}').join(p.area || '');
       html = html.split('{comment}').join(comment);
       

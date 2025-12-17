@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>おすすめ店舗物件</title>
+    <link rel="stylesheet" href="https://www.tenpos-ft.com/wp/wp-content/themes/responsive_037/style.css" />
+    <link rel="stylesheet" href="https://www.tenpos-ft.com/wp/wp-content/themes/responsive_037/css/content.css" />
+    <link rel="stylesheet" href="https://www.tenpos-ft.com/wp/wp-content/plugins/elementor/assets/lib/swiper/v8/css/swiper.min.css" />
+  </head>
+  <body>
+    <div class="contents">
+  <div class="sec-business" style="margin-top: 0px !important;">
+    <div class="frontpage-shop__wrapper">
+      <div class="frontpage-shop-item">
+        <div class="postList">
+          <div id="shop-recommend">
+            <div class="postSlider">
+              <div
+                id="rals-slide-container"
+                class="rals-widget-slide"
+                data-query="prop=2&sup=62807&limit=4&odr=cdtd"
+                data-max-comment="80"
+              >
+                <template id="rals-slide-template">
+                  <li class="recommend-item swiper-slide">
+                    <a id="rals-tpl-link" href="{detailUrl}">
+                      <div class="item-upper">
+                        <div id="rals-tpl-img" class="item-img" style="background:url('{thumbnailUrl}') center center /cover no-repeat"></div>
+                        <div class="item-info__wrapper">
+                          <div id="rals-tpl-condition" class="item-condition">{condition}</div>
+                          <ul class="item-info-list">
+                            <li id="rals-tpl-address" class="item-info-item">{address}</li>
+                            <li id="rals-tpl-title" class="item-info-item">{title}</li>
+                            <li id="rals-tpl-type" class="item-info-item">{type}</li>
+                            <li id="rals-tpl-area" class="item-info-item">{area}</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div id="rals-tpl-comment" class="item-below">{comment}</div>
+                    </a>
+                  </li>
+                </template>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+    <script src="https://www.tenpos-ft.com/wp/wp-includes/js/jquery/jquery.min.js"></script>
+    <script src="https://www.tenpos-ft.com/wp/wp-content/plugins/elementor/assets/lib/swiper/v8/swiper.min.js"></script>
+
+    <script src="./assets/rals-widget-cube.js"></script>
+    <script src="./assets/rals-widget-cube-config.js"></script>
+
+    <script src="./assets/slider-render.js"></script>
+
+  </body>
+</html>

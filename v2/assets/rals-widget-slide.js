@@ -1,28 +1,7 @@
 (function () {
     'use strict';
 
-    // 会社用の設定定数
-    const COMPANY_CONFIG = {
-        apiBaseUrl: 'https://tenpos-ft.example.formatline.com/wp-json/rengodb/v1/search-properties', // APIのベースURL
-        detailPageBaseUrl: 'https://tenpos-ft.example.formatline.com/property/', // 物件詳細ページのベースURL
-        imageBaseUrl: 'https://pic.cbiz.ne.jp/pic/', // 画像のベースURL
-        fallbackImageUrl: 'https://tenpos-ft.example.formatline.com/app/plugins/wp-rengodb/assets/img/noimg.png', // 画像がない場合のフォールバックURL
-
-        // カスタムスタイル
-        customColors: {
-            mainColor: '#e74c3c',
-            hoverColor: '#e55a2b',
-            cardBg: 'white'
-        },
-
-        // テキストのカスタマイズ
-        texts: {
-            loadingMessage: '物件を読み込み中...',
-            noPropertiesMessage: '物件が見つかりません。',
-            errorMessage: '物件情報の読み込みに失敗しました。しばらくしてから再度お試しください。',
-            detailButtonText: '物件詳細を見る'
-        }
-    };
+   
 
     // 会社の設定をウィジェットコンテナに適用する
     function applyCompanyConfig(container) {

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://ralsnet-omar-faruk.github.io/widget-scube-style/development/assets/rals-widget.css">
+    <title> TOPページ 物件cube 表示コーナーのサンプル</title>
+</head>
+<body>
+
+<div class="featured-properties-section">
+    <div class="featured-properties-inner">
+        <h2 class="featured-properties-title">新着・おすすめテナント物件</h2>
+
+        <div class="property-tabs">
+            <button type="button" class="property-tab active" data-category="new">新着</button>
+            <button type="button" class="property-tab" data-category="shop">店舗</button>
+            <button type="button" class="property-tab" data-category="office">事務所</button>
+            <button type="button" class="property-tab" data-category="inuki">居抜き</button>
+        </div>
+
+        <div class="properties-grid-container">
+            <div class="property-content" id="new-properties" style="display: block;">
+                <div class="rals-widget" data-query="prop=2&sup=1370&odr=cdtd&limit=4&page=1">
+                    <div class="properties-grid" style="display: none">
+                        <div class="property-cards">
+                            <div class="property-card">
+                                <div class="property-image"><img class="property-img" src="" alt="" /></div>
+                                <div class="property-info">
+                                    <div class="property-rent">{price}</div>
+                                    <div class="property-details">
+                                        <span>{traffic}</span><br />
+                                        <span>{address}</span><br />
+                                        <span>{area}</span>
+                                    </div>
+                                    <a href="{detailUrl}" target="_blank" rel="noopener noreferrer" class="property-detail-btn">物件詳細を見る</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="property-content" id="shop-properties" style="display: none;">
+                <div class="rals-widget" data-query="prop=2&sup=1370&div=14,17,18,65,67&odr=cdtd&limit=4&page=1">
+                     <div class="properties-grid" style="display: none">
+                        <div class="property-cards">
+                            <div class="property-card">
+                                <div class="property-image"><img class="property-img" src="" alt="" /></div>
+                                <div class="property-info">
+                                    <div class="property-rent">{price}</div>
+                                    <div class="property-details">
+                                        <span>{traffic}</span><br />
+                                        <span>{address}</span><br />
+                                        <span>{area}</span>
+                                    </div>
+                                    <a href="{detailUrl}" target="_blank" rel="noopener noreferrer" class="property-detail-btn">物件詳細を見る</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="property-content" id="office-properties" style="display: none;">
+                <div class="rals-widget" data-query="prop=2&sup=1370&div=15,17,66,67&odr=cdtd&limit=4&page=1">
+                     <div class="properties-grid" style="display: none">
+                        <div class="property-cards">
+                            <div class="property-card">
+                                <div class="property-image"><img class="property-img" src="" alt="" /></div>
+                                <div class="property-info">
+                                    <div class="property-rent">{price}</div>
+                                    <div class="property-details">
+                                        <span>{traffic}</span><br />
+                                        <span>{address}</span><br />
+                                        <span>{area}</span>
+                                    </div>
+                                    <a href="{detailUrl}" target="_blank" rel="noopener noreferrer" class="property-detail-btn">物件詳細を見る</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="property-content" id="inuki-properties" style="display: none;">
+                <div class="rals-widget" data-query="prop=2&sup=1370&limit=4&igc=o&odr=cdtd&page=1">
+                     <div class="properties-grid" style="display: none">
+                        <div class="property-cards">
+                            <div class="property-card">
+                                <div class="property-image"><img class="property-img" src="" alt="" /></div>
+                                <div class="property-info">
+                                    <div class="property-rent">{price}</div>
+                                    <div class="property-details">
+                                        <span>{traffic}</span><br />
+                                        <span>{address}</span><br />
+                                        <span>{area}</span>
+                                    </div>
+                                    <a href="{detailUrl}" target="_blank" rel="noopener noreferrer" class="property-detail-btn">物件詳細を見る</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 物件タブの切り替え機能 Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const propertyTabs = document.querySelectorAll('.property-tab');
+    const propertyContents = document.querySelectorAll('.property-content');
+
+    propertyTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            propertyTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            propertyContents.forEach(content => {
+                content.style.display = 'none';
+            });
+            const category = this.getAttribute('data-category');
+            const targetContent = document.getElementById(category + '-properties');
+            
+            if (targetContent) {
+                targetContent.style.display = 'block';
+            }
+        });
+    });
+});
+</script>
+<script src="https://ralsnet-omar-faruk.github.io/widget-scube-style/development/assets/rals-widget-cube.js"></script>
+<script src="https://ralsnet-omar-faruk.github.io/widget-scube-style/development/assets/rals-widget-cube-config.js"></script>
+
+</body>
+</html>

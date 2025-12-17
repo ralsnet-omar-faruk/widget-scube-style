@@ -4,6 +4,13 @@
   }
   const debug = false;
 
+  // テキストを指定された長さに切り詰める
+  function truncateText(text, maxLength) {
+    if (!text || !maxLength || maxLength <= 0) return text;
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  }
+
   // 価格を「万」単位でフォーマットする
   function formatPrice(price, pricePrivateFlg) {
     if (price === null || price === undefined) {
@@ -541,11 +548,15 @@
           // Handle comment/heading - ID first, then class fallback
           const commentEl = findElement("rals-tpl-comment", ".property-comment, .postList__heading span");
           if (commentEl) {
+            const commentMaxLength = parseInt(container.dataset.commentMaxLength) || 0;
+            
             if (property.comment && property.comment.trim() !== "") {
-              commentEl.textContent = property.comment;
+              const displayComment = truncateText(property.comment, commentMaxLength);
+              commentEl.textContent = displayComment;
               commentEl.style.display = "";
             } else if (property.title && property.title.trim() !== "") {
-              commentEl.textContent = property.title;
+              const displayTitle = truncateText(property.title, commentMaxLength);
+              commentEl.textContent = displayTitle;
               commentEl.style.display = "";
             } else {
               commentEl.style.display = "none";

@@ -7,7 +7,10 @@
         detailPageBaseUrl: 'https://tenpos-ft.example.formatline.com/property/', // 物件詳細ページのベースURL
         imageBaseUrl: 'https://pic.cbiz.ne.jp/pic/', // 画像のベースURL
         fallbackImageUrl: 'https://tenpos-ft.example.formatline.com/app/plugins/wp-rengodb/assets/img/noimg.png', // 画像がない場合のフォールバックURL
-
+        
+        // コメントの最大文字数 (0 = 無制限)
+        commentMaxLength: 100, 
+        
         // カスタムスタイル
         customColors: {
             mainColor: '#e74c3c',
@@ -21,7 +24,9 @@
             noPropertiesMessage: '物件が見つかりません。',
             errorMessage: '物件情報の読み込みに失敗しました。しばらくしてから再度お試しください。',
             detailButtonText: '物件詳細を見る'
-        }
+        },
+
+        
     };
 
     // 会社の設定をウィジェットコンテナに適用する
@@ -50,6 +55,11 @@
         }
         if (!container.dataset.detailButtonText) {
             container.dataset.detailButtonText = COMPANY_CONFIG.texts.detailButtonText;
+        }
+        
+        // コメントの最大文字数を適用
+        if (!container.dataset.commentMaxLength && COMPANY_CONFIG.commentMaxLength) {
+            container.dataset.commentMaxLength = COMPANY_CONFIG.commentMaxLength;
         }
 
         if (COMPANY_CONFIG.customColors.mainColor) {

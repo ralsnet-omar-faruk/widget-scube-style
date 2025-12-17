@@ -208,6 +208,22 @@
     // コメントを取得する
     const comment = item.comment || "";
 
+    // 物件タイプを取得する
+    const propertyType = item.divMasterIdStr || "";
+
+    // 物件条件を取得する（居抜き or スケルトン）
+    let condition = "";
+    
+    const isInuki = item.jsonGoingConcern && Array.isArray(item.jsonGoingConcern) && item.jsonGoingConcern.length > 0;
+    if (isInuki) {
+      condition = "居抜き";
+    } else {
+      const equipmentStr = item.equipmentStr || "";
+      if (equipmentStr.includes("スケルトン")) {
+        condition = "スケルトン";
+      }
+    }
+
     return {
       title,
       price,
@@ -218,6 +234,8 @@
       thumbnailUrl,
       registDate,
       comment,
+      propertyType,
+      condition,
     };
   }
 

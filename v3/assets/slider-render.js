@@ -16,6 +16,9 @@
     var template = document.getElementById('rals-slide-template');
     if (!template) return;
     
+    // テンプレートHTMLを取得
+    var templateHTML = template.innerHTML;
+    
     // ローディング表示
     container.innerHTML = '<div style="text-align:center;padding:2rem;color:#666;">物件を読み込み中...</div>';
     
@@ -32,24 +35,39 @@
       return;
     }
     
-    // スライドHTML生成
+    // data-max-comment属性から最大文字数を取得（デフォルト100）
+    var maxComment = parseInt(container.dataset.maxComment, 10) || 100;
+    
+    // スライドHTML生成（テンプレート置換方式）
     var slidesHTML = properties.map(function(p) {
-      var clone = template.content.cloneNode(true);
-      var img = clone.querySelector('#rals-tpl-img');
-      if (img) { img.style.background = "url('" + (p.thumbnailUrl || '') + "') center center /cover no-repeat"; img.removeAttribute('id'); }
-      var cond = clone.querySelector('#rals-tpl-condition');
-      if (cond) { cond.textContent = '居抜き'; cond.removeAttribute('id'); }
-      var addr = clone.querySelector('#rals-tpl-address');
-      if (addr) { addr.textContent = (p.address || '') + ' ' + (p.title || ''); addr.removeAttribute('id'); }
-      var type = clone.querySelector('#rals-tpl-type');
-      if (type) { type.textContent = '店舗'; type.removeAttribute('id'); }
-      var area = clone.querySelector('#rals-tpl-area');
-      if (area) { area.textContent = p.area || ''; area.removeAttribute('id'); }
-      var comment = clone.querySelector('#rals-tpl-comment');
-      if (comment) { comment.textContent = p.comment || p.title || ''; comment.removeAttribute('id'); }
-      var link = clone.querySelector('#rals-tpl-link');
-      if (link) { link.href = p.detailUrl || '#'; link.removeAttribute('id'); }
-      return clone.querySelector('li').outerHTML;
+      var html = templateHTML;
+      
+      // コメントを最大文字数以内に制限
+      var comment = p.comment || p.title || '';
+      if (comment.length > maxComment) {
+        comment = comment.substring(0, maxComment) + '...';
+      }
+      
+      html = html.split('{thumbnailUrl}').join(p.thumbnailUrl || '');
+      html = html.split('{detailUrl}').join(p.detailUrl || '#');
+      html = html.split('{address}').join((p.address || '') + ' ' + (p.title || ''));
+      html = html.split('{area}').join(p.area || '');
+      html = html.split('{comment}').join(comment);
+      
+      // 居抜き or スケルトン を表示、なければ要素を削除
+      var conditionValue = p.condition || '';
+      html = html.split('{condition}').join(conditionValue);
+      if (!conditionValue) {
+        html = html.replace(/<div[^>]*class="[^"]*item-condition[^"]*"[^>]*>[^<]*<\/div>/gi, '');
+      }
+      
+      // 物件タイプを表示
+      html = html.split('{type}').join(p.propertyType || '');
+      
+      // テンプレートIDを削除
+      html = html.replace(/id="rals-tpl-[^"]*"/g, '');
+      
+      return html;
     }).join('');
     
     // クライアントサイトと同じ構造で出力

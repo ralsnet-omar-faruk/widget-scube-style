@@ -1,6 +1,5 @@
 # Ignore sample index files
 index_sample*
 
-# Ignore v3 folder (currently in development)
-v3/
+# Ignore v3 folder
 

@@ -30,6 +30,20 @@
       container.innerHTML = '<div style="text-align:center;padding:2rem;color:#999;">読み込みに失敗しました</div>';
       return;
     }
+    
+    // 居抜き OR スケルトン のみ表示するフィルター
+    if (container.dataset.filterCondition === 'true') {
+      properties = properties.filter(function(p) {
+        return p.condition === '居抜き' || p.condition === 'スケルトン';
+      });
+    }
+    
+    // 表示件数の制限
+    var displayLimit = parseInt(container.dataset.displayLimit, 10);
+    if (displayLimit && properties.length > displayLimit) {
+      properties = properties.slice(0, displayLimit);
+    }
+    
     if (!properties || !properties.length) {
       container.innerHTML = '<div style="text-align:center;padding:2rem;color:#999;">物件が見つかりません</div>';
       return;
@@ -86,7 +100,8 @@
         slidesPerView: 1, spaceBetween: 20, loop: true,
         autoplay: { delay: 4000, disableOnInteraction: false },
         navigation: { nextEl: container.querySelector('.swiper-button-next'), prevEl: container.querySelector('.swiper-button-prev') },
-        breakpoints: { 769: { slidesPerView: 2, spaceBetween: 36 } }
+        breakpoints: { 769: { slidesPerView: 2, spaceBetween: 40 } },
+        watchOverflow: true
       });
     }
   }

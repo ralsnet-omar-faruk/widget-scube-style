@@ -217,9 +217,12 @@
     const isInuki = item.jsonGoingConcern && Array.isArray(item.jsonGoingConcern) && item.jsonGoingConcern.length > 0;
     if (isInuki) {
       condition = "居抜き";
-    } else {
-      const equipmentStr = item.equipmentStr || "";
-      if (equipmentStr.includes("スケルトン")) {
+    } else if (item.jsonEquipment && Array.isArray(item.jsonEquipment)) {
+      // jsonEquipment で ID "1453" (スケルトン) をチェック - APIは文字列で返す
+      const hasSkeleton = item.jsonEquipment.some(function(eq) {
+        return eq === "1453" || eq === 1453;
+      });
+      if (hasSkeleton) {
         condition = "スケルトン";
       }
     }

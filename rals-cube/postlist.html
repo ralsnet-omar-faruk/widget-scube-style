@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新着物件 - リスト形式サンプル (rals-cube)</title>
+    <!-- 同じCSS使用 -->
+    <link rel="stylesheet" href="https://www.tenpos-ft.com/wp/wp-content/themes/responsive_037/style.css?ver=1763534181">
+    <link rel="stylesheet" href="https://www.tenpos-ft.com/wp/wp-content/themes/responsive_037/css/content.css" />
+    <link rel="stylesheet" href="https://www.tenpos-ft.com/wp/wp-content/plugins/elementor/assets/lib/swiper/v8/css/swiper.min.css" />
+</head>
+<body>
+<div class="contents">
+   <div class="frontpage-shop__wrapper">
+          <div class="frontpage-shop-item">
+            <div class="postList">
+              <div id="shop-recommend">
+                  <div
+                    id="rals-slide-container"
+                    class="rals-widget-slide postSlider"
+                    data-query="prop=2&sup=62807&limit=20&odr=cdtd"
+                    data-max-comment="80"
+                    data-filter-condition="true"
+                    data-display-limit="4"
+                  >
+                    <template id="rals-slide-template">
+                      <li class="recommend-item swiper-slide">
+                        <a id="rals-tpl-link" href="{detailUrl}">
+                          <div class="item-upper">
+                            <div id="rals-tpl-img" class="item-img" style="background:url('{thumbnailUrl}') center center /cover no-repeat"></div>
+                            <div class="item-info__wrapper">
+                              <div id="rals-tpl-condition" class="item-condition">{condition}</div>
+                              <ul class="item-info-list">
+                                <li id="rals-tpl-address" class="item-info-item">{address}</li>
+                                <li id="rals-tpl-title" class="item-info-item">{title}</li>
+                                <li id="rals-tpl-type" class="item-info-item">{type}</li>
+                                <li id="rals-tpl-area" class="item-info-item">{area}</li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div id="rals-tpl-comment" class="item-below">{comment}</div>
+                        </a>
+                      </li>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  <div class="sec-business" style="margin-top: 0px !important;">
+    <div class="postList back-gray">
+      <div class="text-center">
+        <h3>新着物件</h3>
+      </div>
+
+      <!-- rals-cube 用のコンテナ -->
+      <div id="rals-widget-container">
+        <div class="post-list">
+          <template id="rals-template-postlist">
+            <article class="postList__item">
+              <time class="postList__time" datetime="{registDate}">{registDate}</time>
+              <a href="{detailUrl}" class="postList__link" target="_blank" rel="noopener noreferrer">
+                <h3 class="postList__heading"><span>{comment}</span></h3>
+              </a>
+            </article>
+          </template>
+        </div>
+      </div>
+
+      <div class="buttonBlock buttonBlock--mt newBig-button search-button">
+        <a href="https://property.tenpos-ft.com/property/tenant/search" class="buttonBlock__link buttonBlock__link--bg buttonBlock__link--padding" target="_blank" rel="noopener noreferrer">
+          <span>店舗物件を検索</span>
+          <img loading="lazy" src="https://www.tenpos-ft.com/wp/wp-content/uploads/2025/10/mushimegane1.png" alt="虫眼鏡のアイコン" width="20" height="26">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://www.tenpos-ft.com/wp/wp-includes/js/jquery/jquery.min.js"></script>
+<script src="https://www.tenpos-ft.com/wp/wp-content/plugins/elementor/assets/lib/swiper/v8/swiper.min.js"></script>
+<!-- rals-cube 使用 -->
+<script src="https://cdn.rals.net/scripts/ralsnet/v1.0.1/rals-cube-62807.js"></script>
+<script src="postlist_slide.js"></script>
+
+</body>
+</html>

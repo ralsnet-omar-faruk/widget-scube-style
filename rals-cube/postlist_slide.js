@@ -116,7 +116,11 @@
             320: { slidesPerView: 1, spaceBetween: 10 },
             768: { slidesPerView: 2, spaceBetween: 15 },
             1024: { slidesPerView: 3, spaceBetween: 20 }
-          }
+          },
+          // リンククリックを正しく動作させるための設定
+          preventClicks: false,
+          preventClicksPropagation: false,
+          touchStartPreventDefault: false
         });
       }
     }).catch(function(error) {
@@ -218,7 +222,11 @@
           nextEl: container.querySelector('.swiper-button-next'),
           prevEl: container.querySelector('.swiper-button-prev')
         },
-        breakpoints: { 769: { slidesPerView: 2, spaceBetween: 20 } }
+        breakpoints: { 769: { slidesPerView: 2, spaceBetween: 20 } },
+        // リンククリックを正しく動作させるための設定
+        preventClicks: false,
+        preventClicksPropagation: false,
+        touchStartPreventDefault: false
       });
     }
   }
